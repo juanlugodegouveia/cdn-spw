@@ -255,7 +255,7 @@ li::before {
 }
 
 /* Error */
-.error {
+.alert {
   margin: 0!important;
 }
 
