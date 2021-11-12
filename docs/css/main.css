@@ -261,11 +261,8 @@ li::before {
 /* Error */
 .alert {
   margin: 0!important;
-}
-
-.alert {
-  margin: 0!important;
-  font-size: 10.6rem;
+  font-size: 1.6rem;
+  font-weight: 500;
 }
 
 /* Sweet Alert */
