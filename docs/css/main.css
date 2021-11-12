@@ -254,6 +254,11 @@ li::before {
   transform: translateY(-100%);
 }
 
+/* Error */
+.error {
+  margin: 0!important;
+}
+
 /* Small devices (landscape phones, 576px and up) */
 @media (min-width: 576px) {
   .modal_content {
