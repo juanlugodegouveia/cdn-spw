@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Dev - Recommend a Friend to Schroders Personal Wealth</title>
+    </head>
+
+%%[
+
+    set @OriginalReferrer_PersonContactID = RequestParameter("PersonContactID")
+    set @OriginalReferrer_PersonEmail = RequestParameter("PersonEmail")
+    set @ReferralCode = IIF(Empty(RequestParameter("EmailReferralCode")), "EMPTYREFERRER", RequestParameter("EmailReferralCode"))
+    set @OriginalReferrer_FirstName = RequestParameter("FirstName")
+    set @OriginalReferrer_LastName = RequestParameter("LastName")
+
+    set @ReferredPerson_FirstName =  RequestParameter("ReferredPerson_FirstName")
+    set @ReferredPerson_LastName = RequestParameter("ReferredPerson_LastName")
+    set @Referred_EmailAddress = RequestParameter("email")
+    set @ReferredPerson_EmailHash = SHA256(@Referred_EmailAddress,'UTF-8')
+    set @ReferralDate = Now()
+
+    if RequestParameter("submitted") == "submitted" then
+
+    var @promptmessage
+    set @promptmessage = "Recommend a friend message for the top hero are"
+    set @promptmessage = Iif(IsEmailAddress(@Referred_EmailAddress)==false,'<div class="alert">You have entered an invalid email address</div>','')
+
+    If IsEmailAddress(@Referred_EmailAddress) == true then 
+
+    // Check is the Reffered Email Address has already been referred to us
+    set @Referred_check = RowCount(LookupRows('ReferralJourney_LogDE','ReferredPerson_EmailHash',@ReferredPerson_EmailHash))
+    If @Referred_check == 1 then  / 
+      set @promptmessage = '<div class="alert">It appears that your friend has already been referred to us</div>'
+    else
+
+    // Insert the Referral Data Into the Log Data Extension
+
+    set @InsertReferralLog = UpsertDE(
+     'ReferralJourney_LogDE',2,
+     'ReferredPerson_EmailHash', @ReferredPerson_EmailHash, /* Update on Referred Email and Referrer */
+     'OriginalReferrer_PersonContactID', @OriginalReferrer_PersonContactID,
+     'OriginalReferrer_FirstName', @OriginalReferrer_FirstName,
+     'OriginalReferrer_LastName', @OriginalReferrer_LastName,
+     'OriginalReferrer_PersonEmail', @OriginalReferrer_PersonEmail,
+     'ReferralCode', @ReferralCode,
+     'ReferredPerson_FirstName', @ReferredPerson_FirstName,
+     'ReferredPerson_LastName', @ReferredPerson_LastName,
+     'ReferralDate', @ReferralDate)
+
+/* Trigger Send Email to the Referred person  - Referral_TS_ReferredPerson_JUAN*/
+
+    VAR @ts, @tsDef, @ts_extkey, @ts_email, @ts_sub, @ts_statusCode, @ts_statusMsg, @errorCode
+    SET @ts = CreateObject("TriggeredSend")
+    SET @tsDef = CreateObject("TriggeredSendDefinition")
+    SET @ts_extkey = "Referral_TS_ReferredPerson_JUAN" /* use the external key of the interaction for example SET @ts_extkey = "49078" */
+
+    SetObjectProperty(@tsDef, "CustomerKey", @ts_extkey)
+    SetObjectProperty(@ts, "TriggeredSendDefinition", @tsDef)
+    
+    SET @ts_sub = CreateObject("Subscriber")
+    SetObjectProperty(@ts_sub, "EmailAddress", @Referred_EmailAddress)
+    SetObjectProperty(@ts_sub, "SubscriberKey", @ReferredPerson_EmailHash) /* set hash of EmailAddress as SubscriberKey */
+
+    SET @vReferredPerson_FirstName = CreateObject("Attribute") 
+    SetObjectProperty(@vReferredPerson_FirstName, "Name", "FirstName") 
+    SetObjectProperty(@vReferredPerson_FirstName,"Value", @ReferredPerson_FirstName) 
+    AddObjectArrayItem(@ts, "Attributes", @vReferredPerson_FirstName)
+
+    /* Juan's code - Add Last Name*/
+    SET @vReferredPerson_LastName = CreateObject("Attribute") 
+    SetObjectProperty(@vReferredPerson_LastName, "Name", "LastName") 
+    SetObjectProperty(@vReferredPerson_LastName,"Value", @ReferredPerson_LastName) 
+    AddObjectArrayItem(@ts, "Attributes", @vReferredPerson_LastName)
+    /* END Juan's code*/
+
+    SET @vOriginalReferrer_FirstName = CreateObject("Attribute") 
+    SetObjectProperty(@vOriginalReferrer_FirstName, "Name", "OriginalReferrer_FirstName") 
+    SetObjectProperty(@vOriginalReferrer_FirstName,"Value", @OriginalReferrer_FirstName) 
+    AddObjectArrayItem(@ts, "Attributes", @vOriginalReferrer_FirstName)
+
+    SET @vOriginalReferrer_PersonContactID = CreateObject("Attribute") 
+    SetObjectProperty(@vOriginalReferrer_PersonContactID, "Name", "OriginalReferrer_PersonContactID") 
+    SetObjectProperty(@vOriginalReferrer_PersonContactID,"Value", @OriginalReferrer_PersonContactID) 
+    AddObjectArrayItem(@ts, "Attributes", @vOriginalReferrer_PersonContactID)
+
+    SET @vReferralCode = CreateObject("Attribute") 
+    SetObjectProperty(@vReferralCode, "Name", "ReferralCode") 
+    SetObjectProperty(@vReferralCode,"Value", @ReferralCode) 
+    AddObjectArrayItem(@ts, "Attributes", @vReferralCode)
+
+    AddObjectArrayItem(@ts, "Subscribers", @ts_sub)
+    Output(InvokeCreate(@ts, @ts_statusMsg, @errorCode))
+
+ /* Trigger Send Email to the Referred person  - Referral_TS_ReferredPerson_JUAN*/
+
+    endif /* Referred_check*/
+    endif /* valid email check*/
+    endif /* if submitted */
+
+    ]%%
+    
+    <body >
+      <section class="hero" id="hero" >
+        <div class="container">
+
+          <div class="row">
+            <div class="col-md-8 col-md-offset-2 text-center">
+              <h1 class="animated bounceInDown">Referral Programme - Refer a Friend to SPW</h1>
+              <p class="animated fadeInUpDelay">%%=v(@promptmessage)=%%</p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-8 col-md-offset-2 text-center">
+              
+              <form action="%%=RequestParameter('PAGEURL')=%%" method="post">
+                <div class="info">
+                  Referrer Details :
+                  <input class="EmailReferralCode" type="text" name="EmailReferralCode" placeholder="%%=v(@ReferralCode)=%%" value="%%=v(@ReferralCode)=%%" readonly>
+                  <input class="ReferrerFirstName" type="text" name="ReferrerFirstName" placeholder="%%=v(@OriginalReferrer_FirstName)=%%" readonly>
+                  <input class="ReferrerLastName" type="text" name="ReferrerLastName" placeholder="%%=v(@OriginalReferrer_LastName)=%%" readonly><br>
+                  Referree Details :
+                  <input class="fname" type="text" name="ReferredPerson_FirstName" placeholder="First name">
+                  <input class="lname" type="text" name="ReferredPerson_LastName" placeholder="Last name">
+                  <input type="text" name="email" placeholder="Email Address">
+
+                  <input id="submitted" type="hidden" name="submitted" value="submitted" />
+                </div>
+        
+                <button type="submit" href="/">Submit</button>
+              </form>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <script>
+          console.log('%%=v(@ReferralCode)=%%');
+      </script>
+
+    </body>
+  </html>
