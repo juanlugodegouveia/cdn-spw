@@ -263,6 +263,8 @@ li::before {
   margin: 0!important;
   font-size: 1.6rem;
   font-weight: 500;
+  text-align: start;
+  line-height: 1.4;
 }
 
 /* Sweet Alert */
