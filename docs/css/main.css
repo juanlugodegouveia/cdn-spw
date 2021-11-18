@@ -268,7 +268,7 @@ li::before {
   transition: all .3s;
 }
 
-.alert:hover {
+.alert a:hover {
   color: var(--blue);
 }
 
