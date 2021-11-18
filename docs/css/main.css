@@ -258,13 +258,18 @@ li::before {
   transform: translateY(-100%);
 }
 
-/* Error */
+/* Alert - Error */
 .alert {
   margin: 0!important;
   font-size: 1.6rem;
   font-weight: 500;
   text-align: start;
   line-height: 1.4;
+  transition: all .3s;
+}
+
+.alert:hover {
+  color: var(--blue);
 }
 
 /* Sweet Alert */
