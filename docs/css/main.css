@@ -213,6 +213,38 @@ li::before {
   outline: none;
 }
 
+.floating_label select {
+  width: 94%;
+  border: none;
+  border-radius: 30px;
+  background: none;
+}
+
+.floating_label select:focus-visible {
+  outline: none;
+}
+
+.label_select {
+  margin-bottom: 0 0 2.5rem 0;
+  font-size: 18px;
+}
+
+.checkbox {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  margin-bottom: 2.5rem;
+}
+
+.checkbox input {
+  transform: scale(2);
+}
+
+.checkbox label {
+  margin-left: 2rem;
+  font-size: 18px;
+}
+
 /* Buttons */
 .btn-container button {
   width: 100%;
