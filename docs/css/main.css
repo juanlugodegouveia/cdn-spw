@@ -326,6 +326,12 @@ li::before {
       font-size: 1.5rem!important;
   }
 
+.swal_p {
+  margin: 0;
+  font-size: 2.2rem;
+  color: var(--fuchsia);
+}
+
 /* Small devices (landscape phones, 576px and up) */
 @media (min-width: 576px) {
   .modal_content {
