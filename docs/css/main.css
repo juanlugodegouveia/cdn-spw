@@ -54,6 +54,7 @@ a,
 u {
   text-decoration: none;
   color: var(--white);
+  transition: all .3s
 }
 
 .mail {
