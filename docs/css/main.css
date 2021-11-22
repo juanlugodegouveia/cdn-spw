@@ -193,8 +193,8 @@ li::before {
   text-align: center;
 }
 
-/* Floating Input */
-.floating_label {
+/* Input container */
+.input_container {
   width: 100%;
   background: var(--white);
   border-radius: 2.5rem;
@@ -202,25 +202,25 @@ li::before {
   padding: 1rem 0;
 }
 
-.floating_label input {
+.input_container input {
   width: 90%;
   background: transparent;
   border: none;
   margin-left: 1.5rem;
 }
 
-.floating_label input:focus-visible {
+.input_container input:focus-visible {
   outline: none;
 }
 
-.floating_label select {
+.input_container select {
   width: 94%;
   border: none;
   border-radius: 30px;
   background: none;
 }
 
-.floating_label select:focus-visible {
+.input_container select:focus-visible {
   outline: none;
 }
 
