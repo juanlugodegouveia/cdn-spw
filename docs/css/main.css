@@ -298,6 +298,7 @@ li::before {
   text-align: start;
   line-height: 1.4;
   transition: all .3s;
+  white-space: normal!important;
 }
 
 .alert a {
