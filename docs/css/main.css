@@ -299,6 +299,7 @@ li::before {
   line-height: 1.4;
   transition: all .3s;
   white-space: normal!important;
+  text-align: justify!important;
 }
 
 .alert a {
