@@ -508,14 +508,14 @@ li::before {
   .card-container {
     margin-top: 9.5rem;
     /* width: 80%; */
-    height: 40rem;
+    height: 50rem;
   }
 }
 
 /* X-Large devices (large desktops, 1200px and up) */
 @media (min-width: 1200px) {
   .card-container {
-    height: 35rem;
+    height: 52rem;
   }
 
   .card-container {
@@ -526,6 +526,6 @@ li::before {
 /* XX-Large devices (larger desktops, 1400px and up) */
 @media (min-width: 1400px) {
   .card-container {
-    height: 30rem;
+    height: 44.5rem;
   }
 }
