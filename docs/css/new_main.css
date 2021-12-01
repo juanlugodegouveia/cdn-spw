@@ -128,7 +128,7 @@ input:-webkit-autofill:active {
 }
 
 .modal_title {
-  font-size: 3.5rem;
+  font-size: 3rem;
   font-weight: 400;
   margin: 0 0 2.5rem 0;
 }
@@ -478,7 +478,7 @@ li::before {
   }
 
   .modal_title {
-    font-size: 4rem;
+    font-size: 3rem;
   }
 
   li::before {
